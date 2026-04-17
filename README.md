@@ -1,55 +1,100 @@
-[![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Selenium](https://img.shields.io/badge/Selenium-4.0%2B-43B02A?style=for-the-badge&logo=Selenium&logoColor=white)](https://selenium.dev)
-[![Edge](https://img.shields.io/badge/Edge-Chromium-0078D4?style=for-the-badge&logo=MicrosoftEdge&logoColor=white)](https://microsoft.com/edge)
-[![IoT](https://img.shields.io/badge/IoT-Automation-EF6C00?style=for-the-badge&logo=arduino&logoColor=white)](https://sphero.com)
-[![License](https://img.shields.io/github/license/Willxxx7/SpheroBolt?style=for-the-badge&logo=github&logoColor=white)](LICENSE)
+# SpheroBolt - Stateful IoT Robotics Automation System
 
-# SpheroBolt - Stateful IoT Robot Automation
-
-**Production-grade Sphero BOLT control via Selenium + Edge debug sessions**
+[Python](https://python.org) • [Selenium](https://selenium.dev) • [Microsoft Edge](https://microsoft.com/edge) • [IoT Systems](https://sphero.com) • [GPL-3.0 License](LICENSE)
 
 ---
 
-## 🎯 What It Does
+## 📌 Executive Summary
+
+This project demonstrates a **state-preserving IoT automation architecture** that integrates:
+
+- Sphero BOLT robotic platform  
+- Web-based control interface (Sphero Edu)  
+- Browser automation via Selenium WebDriver  
+- Microsoft Edge persistent debugging sessions  
+- Real-time telemetry and leaderboard integration (Pi4B systems)
+
+### Core Engineering Insight
+
+> Reliable IoT automation is achieved not by increasing control complexity, but by preserving system state across execution boundaries.
+
+---
+
+## 🎯 System Objective
+
+To design a **stable, repeatable, and low-latency robotic control system** capable of:
+
+- Eliminating Bluetooth reconnection instability
+- Maintaining persistent web control sessions
+- Enabling deterministic automation via Selenium
+- Supporting real-time feedback loops (robot → web → leaderboard)
+
+---
+
+## 🧠 Architectural Concept
 
 ```mermaid
 graph LR
-    A[Edge Debug Port 9222] --> B[Sphero Edu Web App]
-    B --> C[BOLT Pre-Paired]
-    C --> D[Selenium Attaches]
-    D --> E[Roll / LED / Matrix Commands]
-    E --> F[Pi4B Leaderboard Update]
+A[Edge Debug Session :9222] --> B[Sphero Edu Web App]
+B --> C[Web Bluetooth API Layer]
+C --> D[Pre-Paired Sphero BOLT]
+D --> E[Selenium Automation Controller]
+E --> F[Robot Actuation Layer]
+F --> G[Pi4B Leaderboard / Telemetry System]
 ```
 
-**Key Idea:**  
-Pre-connect Sphero BOLT → Selenium attaches to live browser session → No pairing delays
+---
+
+## ⚙️ System Design Philosophy
+
+### 1. Stateful Automation Model
+
+Traditional automation fails in IoT contexts due to repeated system resets.  
+This system instead implements:
+
+- Persistent browser sessions
+- Reused Bluetooth pairing state
+- Non-destructive automation cycles
+
+---
+
+### 2. Control Layer Separation
+
+| Layer | Responsibility |
+|------|---------------|
+| Hardware Layer | Sphero BOLT robot execution |
+| Connectivity Layer | Web Bluetooth pairing |
+| Application Layer | Sphero Edu web interface |
+| Automation Layer | Selenium WebDriver control |
+| Debug Layer | Edge DevTools Protocol |
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-```
-Python 3.8+
-Microsoft Edge (Chromium)
-Sphero BOLT (charged, Bluetooth enabled)
-```
+
+- Python 3.8+
+- Microsoft Edge (Chromium)
+- Sphero BOLT (charged + paired capability)
+- Bluetooth enabled system
 
 ---
 
-### 1. Launch Edge Debug Session
+### 1. Launch Persistent Edge Session
 
 ```bash
 "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --remote-debugging-port=9222
 ```
 
 Then:
-- Go to `https://edu.sphero.com`
-- Manually pair Sphero BOLT (green LED confirms connection)
+- Navigate to: https://edu.sphero.com  
+- Perform **manual one-time pairing** of Sphero BOLT  
+- Confirm stable connection (green LED state)
 
 ---
 
-### 2. Install & Run
+### 2. Deploy Automation Stack
 
 ```bash
 git clone https://github.com/Willxxx7/SpheroBolt.git
@@ -60,133 +105,154 @@ python sphero_automation.py
 
 ---
 
-### 3. Expected Result
+### 3. System Execution Outcome
 
-```
-Sphero rolls forward
-LED matrix displays animation
-Pi4B leaderboard updates score
-Robot responds in real-time
-```
+- Persistent browser session is reused
+- No Bluetooth reinitialisation required
+- Robot responds in real time
+- State continuity preserved across runs
 
 ---
 
-## 🏗️ Architecture
+## 🧪 Problem Statement
 
-```text
-Edge Debug Session (Persistent)
-        ↓
-Sphero Edu Web App (Live Session)
-        ↓
-Web Bluetooth API (Pre-paired Device)
-        ↓
-Selenium Automation Layer
-        ↓
-Sphero BOLT Robot
-        ↓
-Pi4B Leaderboard System
-```
+Initial implementations using standard Selenium exhibited:
+
+- Browser reinitialisation on each execution
+- Loss of Bluetooth pairing state
+- Re-triggering of device pairing workflow
+- High variability in system response
 
 ---
 
-## 📊 Stateless vs Stateful Comparison
+## 🔍 Root Cause Analysis
 
-| Approach              | Behaviour                                      | Result      |
-|----------------------|----------------------------------------------|------------|
-| Normal Selenium       | Browser restarts each run                    | Unstable   |
-| Edge Debug Session    | Persistent browser + reused connection       | Stable     |
+The system failed due to:
 
----
+> Stateless automation applied to a stateful physical computing system
 
-## 🛠️ Tech Stack
+Key failure chain:
 
-```yaml
-Core:
-  - Python 3.8+
-  - Selenium WebDriver
-  - Microsoft Edge (Chromium)
-
-IoT:
-  - Sphero BOLT (Bluetooth)
-  - Web Bluetooth API
-  - Sphero Edu Platform
-
-Infrastructure:
-  - Pi4B kiosk leaderboard
-  - Local automation scripts
-```
+1. Browser restart  
+2. JavaScript runtime reset  
+3. Bluetooth session teardown  
+4. Device re-discovery requirement  
+5. Unstable automation loop  
 
 ---
 
-## 📸 Screenshots (Add These Later)
+## 🛠️ Engineering Solution
 
-### Sphero Control Interface
-`screenshots/sphero_control.png`
+### Persistent Debug Session Architecture
 
-### Edge Debug Session
-`screenshots/edge_debug.png`
+By enabling Edge remote debugging:
 
-### Pi4B Leaderboard
-`screenshots/pi4b_leaderboard.png`
-
----
-
-## 🔧 Troubleshooting
-
-### Port 9222 already in use
 ```bash
-netstat -ano | findstr :9222
+--remote-debugging-port=9222
 ```
-Kill the process and restart Edge.
+
+The system achieves:
+
+- Shared browser context across automation cycles  
+- Persistent Web Bluetooth session retention  
+- Stable DOM + JS runtime state  
+- Reusable device pairing state  
 
 ---
 
-### Sphero not connecting
-- Turn robot off/on
-- Check Bluetooth pairing
-- Ensure Sphero Edu site is open
+## 📊 System Behaviour Comparison
+
+| Model | Behaviour | Outcome |
+|------|----------|--------|
+| Stateless Automation | Full reset per run | Unstable |
+| Stateful Debug Model | Persistent session reuse | Stable |
 
 ---
 
-### Selenium not attaching
-- Confirm Edge started with:
-  `--remote-debugging-port=9222`
-- Ensure session is already open before running script
+## 🧩 Technology Stack
+
+### Core Stack
+- Python 3.8+
+- Selenium WebDriver
+- Microsoft Edge (Chromium)
+
+### IoT Stack
+- Sphero BOLT (Bluetooth Low Energy)
+- Web Bluetooth API
+- Sphero Edu Web Platform
+
+### Infrastructure Layer
+- Raspberry Pi 4B (leaderboard / telemetry)
+- Local automation scripts
+- Optional cloud logging (extendable)
 
 ---
 
-## 🎓 Key Engineering Insights
+## 📡 System Characteristics
 
-- State persistence is more important than automation complexity  
-- Browser session continuity avoids Bluetooth reset cycles  
-- Pre-pairing eliminates unstable reconnection logic  
-- Real-world IoT systems depend on runtime stability  
-- Debug browser sessions expose powerful automation control  
+- **Latency:** Low (pre-paired device state)
+- **Reliability:** High (session persistence model)
+- **Scalability:** Medium (single-session browser model)
+- **Determinism:** High (controlled automation layer)
+
+---
+
+## 🧪 Key Engineering Insights
+
+### 1. State Persistence is a Primary Control Variable
+System stability is governed more by state retention than by automation logic.
+
+### 2. Browser Context = Device Stability
+Maintaining a live browser session preserves Bluetooth pairing integrity.
+
+### 3. Automation Must Respect OS-Level Boundaries
+Selenium operates at DOM level; hardware interaction requires indirect control.
+
+### 4. Debug Interfaces Unlock System Continuity
+Remote debugging exposes persistent runtime control surfaces.
 
 ---
 
 ## 📈 Outcomes
 
-- Stable robot control via browser automation  
-- Zero repeated pairing required  
-- Real-time IoT response system  
-- Educational IoT + automation demonstration  
-- Works as a live classroom engineering model  
+- Stable robotic control loop achieved
+- Zero repeated pairing cycles required
+- Deterministic automation behaviour established
+- Real-time IoT feedback loop operational
+- Demonstrable classroom + research deployment model
 
 ---
 
-## 📄 License
+## 🎓 Educational & Research Value
+
+This system demonstrates:
+
+- IoT system architecture design  
+- Stateful vs stateless computing models  
+- Browser automation limitations and extensions  
+- Web Bluetooth interaction constraints  
+- Real-world debugging and system recovery strategies  
+- Multi-layer distributed control systems  
+
+---
+
+## 🔐 License
 
 GPL-3.0
 
 ---
 
-## 🤝 Contributing
+## 🤝 Contribution Model
 
-Pull requests and improvements welcome.
+This project is open for extension in:
+
+- Multi-device robot coordination
+- Cloud telemetry integration
+- AI-driven motion planning
+- Extended sensor fusion systems
 
 ---
 
-## 📌 Summary
+## 📌 Closing Statement
 
-This project demonstrates how **stateful browser automation + IoT devices** can be combined to create reliable real-world robotics control systems using Selenium and Edge debug sessions.
+This project demonstrates that **robust IoT automation is not achieved through increased tool complexity, but through controlled preservation of execution state across all system layers.**
