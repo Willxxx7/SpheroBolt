@@ -125,8 +125,6 @@ Shift from **stateless → stateful automation**
 
 #### Key Implementation
 
-- Launch Edge with remote debugging:
-
 ```bash
 msedge.exe --remote-debugging-port=9222
 ```
@@ -139,7 +137,7 @@ msedge.exe --remote-debugging-port=9222
 #### Result
 
 ✅ Stable, reliable IoT control  
-✅ No repeated pairing cycles  
+❌ No repeated pairing cycles  
 ✅ Persistent device connection  
 
 ---
@@ -184,29 +182,20 @@ D --> E[Sphero BOLT Robot]
 ### 1. State Persistence > Tool Complexity
 Reliable IoT automation depends on maintaining system state.
 
----
-
 ### 2. Reinitialisation Causes Failure
 Repeated resets of browser, application, and device state lead to instability.
 
----
-
 ### 3. Persistent Runtime is Critical
 Keeping sessions alive avoids reconnection issues.
-
----
 
 ### 4. Automation Boundaries Matter
 
 - ❌ Restarting browser resets device state  
 - ✅ Controlling UI within a live session preserves it  
 
----
-
 ### 5. Real Insight
 
-Automation systems fail not because tools lack capability,  
-but because system state is repeatedly destroyed and rebuilt.
+Automation systems fail not because tools lack capability, but because system state is repeatedly destroyed and rebuilt.
 
 ---
 
@@ -239,9 +228,6 @@ pip install -r requirements.txt --force-reinstall
 ---
 
 ### Browser Issues
-
-- Ensure Edge is installed and up to date  
-- Check debugging port is available  
 
 ```bash
 netstat -ano | findstr :9222
