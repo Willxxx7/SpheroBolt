@@ -26,11 +26,13 @@ Reliable control is achieved by preserving system state, not repeatedly rebuildi
 ## Table of Contents
 
 - [Quick Start](#quick-start)
-- [Main Project](#main-project)
+- [Main Project](#main-project-python-selenium-iot-automation)
 - [Architecture](#architecture)
 - [Stateless vs Stateful Comparison](#stateless-vs-stateful-comparison)
+- [Technologies Used](#technologies-used)
 - [Key Learnings](#key-learnings)
 - [Troubleshooting](#troubleshooting)
+- [Educational Value](#educational-value)
 
 ---
 
@@ -38,10 +40,10 @@ Reliable control is achieved by preserving system state, not repeatedly rebuildi
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- Python 3.8+
-- Microsoft Edge (Chromium)
-- Sphero BOLT robot
+- Node.js (v14 or higher)  
+- Python 3.8+  
+- Microsoft Edge (Chromium)  
+- Sphero BOLT robot  
 
 ---
 
@@ -146,7 +148,7 @@ msedge.exe --remote-debugging-port=9222
 
 ```mermaid
 flowchart TD
-A[Selenium Automation Layer] --> B[Edge Browser (Persistent Session)]
+A[Selenium Automation Layer] --> B[Edge Browser - Persistent Session]
 B --> C[Sphero Edu Web Application]
 C --> D[Web Bluetooth API]
 D --> E[Sphero BOLT Robot]
@@ -185,7 +187,7 @@ Reliable IoT automation depends on maintaining system state.
 ---
 
 ### 2. Reinitialisation Causes Failure
-Repeated resets of browser/app/device state lead to instability.
+Repeated resets of browser, application, and device state lead to instability.
 
 ---
 
@@ -195,6 +197,7 @@ Keeping sessions alive avoids reconnection issues.
 ---
 
 ### 4. Automation Boundaries Matter
+
 - ❌ Restarting browser resets device state  
 - ✅ Controlling UI within a live session preserves it  
 
@@ -202,8 +205,8 @@ Keeping sessions alive avoids reconnection issues.
 
 ### 5. Real Insight
 
-> Automation systems fail not because tools lack capability,  
-> but because system state is repeatedly destroyed and rebuilt.
+Automation systems fail not because tools lack capability,  
+but because system state is repeatedly destroyed and rebuilt.
 
 ---
 
