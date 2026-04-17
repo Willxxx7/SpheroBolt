@@ -51,6 +51,12 @@ sphero.roll(100, 90); // Roll forward at 100 speed for 90 degrees
 
 ## Main Project - Python/Selenium IoT Automation
 
+flowchart TD
+A[Selenium Automation Layer] --> B[Edge Browser (Persistent Session)]
+B --> C[Sphero Edu Web Application]
+C --> D[Web Bluetooth / Connection Layer]
+D --> E[Sphero BOLT Robot (Hardware)]
+
 ### Problem Statement
 Initial automation attempts using standard Selenium resulted in unstable behavior:
 - Browser restarted on every run
