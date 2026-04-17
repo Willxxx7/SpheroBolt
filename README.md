@@ -1,34 +1,44 @@
 # SpheroBolt - IoT Automation Project
 
-## Overview
-SpheroBolt demonstrates a real-world IoT automation system combining Sphero BOLT robot control with stateful browser automation using Selenium and Microsoft Edge persistent debugging sessions.
+> Demonstrates a real-world IoT automation system combining Sphero BOLT robot control with stateful browser automation using Selenium and Microsoft Edge persistent debugging sessions.
+
+## 📋 Table of Contents
+
+- [Quick Start](#quick-start)
+- [Main Project](#main-project)
+- [Architecture](#architecture)
+- [Key Learnings](#key-learnings)
+- [Troubleshooting](#troubleshooting)
 
 ---
 
-## Table of Contents
-1. [Quick Start - Basic Node.js Setup](#quick-start---basic-nodejs-setup)
-2. [Main Project - Python/Selenium IoT Automation](#main-project---pythonselenium-iot-automation)
-3. [Troubleshooting](#troubleshooting)
-
----
-
-## Quick Start - Basic Node.js Setup
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js installed on your machine
-- Sphero SDK: `npm install sphero`
+- Node.js (v14 or higher)
+- Python 3.8+
+- Microsoft Edge browser
+- Sphero BOLT robot
 
-### Installation & Execution
-1. Clone the repository:
+### Installation
+
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/Willxxx7/SpheroBolt.git
    cd SpheroBolt
    ```
-2. Install dependencies:
+
+2. **Install Node.js dependencies:**
    ```bash
    npm install
    ```
-3. Run the project:
+
+3. **Install Python dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Run the project:**
    ```bash
    node index.js
    ```
@@ -43,105 +53,176 @@ sphero.roll(100, 90); // Roll forward at 100 speed for 90 degrees
 ```
 
 ### Project Structure
-- `index.js` - Main entry point
-- `lib/` - Library files for additional functionality
-- `package.json` - Project metadata and dependencies
+```
+SpheroBolt/
+├── index.js                 # Main Node.js entry point
+├── python_automation/       # Python/Selenium automation scripts
+├── lib/                     # Library files
+├── package.json             # Node.js dependencies
+├── requirements.txt         # Python dependencies
+└── README.md               # This file
+```
 
 ---
 
-## Main Project - Python/Selenium IoT Automation
+## 🎯 Main Project: Python/Selenium IoT Automation
 
-flowchart TD
-A[Selenium Automation Layer] --> B[Edge Browser (Persistent Session)]
-B --> C[Sphero Edu Web Application]
-C --> D[Web Bluetooth / Connection Layer]
-D --> E[Sphero BOLT Robot (Hardware)]
+### The Problem
 
-### Problem Statement
-Initial automation attempts using standard Selenium resulted in unstable behavior:
-- Browser restarted on every run
-- Web application reinitialized each time
-- Bluetooth connection workflow repeatedly triggered
-- Device connection frequently dropped or failed
-- Inconsistent and unreliable automation
+Initial automation attempts using standard Selenium suffered from **critical instability**:
+- ❌ Browser restarted on every run
+- ❌ Web application reinitialized each time
+- ❌ Bluetooth connection workflow repeatedly triggered
+- ❌ Device connection frequently dropped or failed
+- ❌ Inconsistent and unreliable automation
 
 ### Root Cause Analysis
-**Stateless automation applied to a stateful IoT system**
 
-Each run caused:
-- Full browser restart
-- Web application reload
-- JavaScript runtime reset
-- Reinitialization of Bluetooth connection logic
-- Re-triggering of pairing workflow
+**The Issue:** Stateless automation applied to a stateful IoT system
+
+Each run caused a cascade of resets:
+1. Full browser restart
+2. Web application reload
+3. JavaScript runtime reset
+4. Reinitialization of Bluetooth connection logic
+5. Re-triggering of pairing workflow
 
 This created a loop of repeated setup attempts instead of maintaining a stable control session.
 
-### Solution: Persistent Browser Sessions
-Introduced persistent browser session using Edge remote debugging mode, shifting the system from stateless to stateful automation.
+### The Solution: Persistent Browser Sessions
 
-**Key Changes:**
-- Edge launched with remote debugging enabled (`--remote-debugging-port=9222`)
-- Selenium attached to an existing browser session
-- Web application state remained active between runs
-- Sphero device paired once and reused
-- Automation operated only on the control layer (UI)
+Shifted the system from **stateless → stateful automation** by using Edge remote debugging mode.
 
-### System Architecture
-```
-Selenium Automation Layer
-    ↓
-Edge Browser (Persistent Debug Session)
-    ↓
-Sphero Edu Web Application
-    ↓
-Web Bluetooth Connection Layer
-    ↓
-Sphero BOLT Robot
-```
+**Key Implementation:**
+- Launch Edge with remote debugging: `--remote-debugging-port=9222`
+- Attach Selenium to an existing browser session (not a new one)
+- Keep web application state active between runs
+- Reuse paired Sphero device
+- Automate only the control layer (UI interactions)
 
-### Technologies Used
-- Python
-- Selenium WebDriver
-- Microsoft Edge (Chromium)
-- Edge DevTools Protocol (Remote Debugging)
-- Sphero Edu Web Application
-- Sphero BOLT Robot
-- Web Bluetooth API (browser-managed)
-
-### Key Insights
-1. **IoT automation reliability depends more on state persistence than automation capability**
-2. Repeated system reinitialization is one of the most common causes of instability in IoT control systems
-3. Persistent runtime environments improve reliability significantly
-4. Resetting browser or application state can unintentionally reset device connections
-
-### Educational Value
-This project demonstrates:
-- Stateful vs stateless automation systems
-- Browser automation limitations (DOM vs OS boundaries)
-- IoT device lifecycle management
-- Web Bluetooth behavior in real environments
-- Debugging layered system interactions
-- Practical automation architecture design
-
-### Learning Outcome
-Stable IoT automation is achieved not by increasing tool complexity, but by **preserving system state across execution cycles**. Persistent runtime environments are critical for reliability.
+**Result:** ✅ Stable, reliable IoT control
 
 ---
 
-## Troubleshooting
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────┐
+│   Selenium Automation Layer         │
+│   (Python Control Logic)            │
+└──────────────┬──────────────────────┘
+               │
+┌──────────────▼──────────────────────┐
+│   Edge Browser                      │
+│   (Persistent Debug Session)        │
+└──────────────┬──────────────────────┘
+               │
+┌──────────────▼──────────────────────┐
+│   Sphero Edu Web Application        │
+│   (Control Interface)               │
+└──────────────┬──────────────────────┘
+               │
+┌──────────────▼──────────────────────┐
+│   Web Bluetooth API                 │
+│   (Device Connection Layer)         │
+└──────────────┬──────────────────────┘
+               │
+┌──────────────▼──────────────────────┐
+│   Sphero BOLT Robot                 │
+│   (Hardware)                        │
+└───────────────────────��─────────────┘
+```
+
+### Technologies Used
+
+| Component | Technology |
+|-----------|-----------|
+| **Scripting** | Python 3, Node.js |
+| **Browser Automation** | Selenium WebDriver |
+| **Browser** | Microsoft Edge (Chromium) |
+| **Debugging** | Edge DevTools Protocol (Remote Debugging) |
+| **Connectivity** | Web Bluetooth API |
+| **Hardware** | Sphero BOLT Robot |
+| **Control Interface** | Sphero Edu Web Application |
+
+---
+
+## 📚 Key Learnings
+
+### 1. **State Persistence > Tool Complexity**
+IoT automation reliability depends more on maintaining system state than on automation tool capabilities.
+
+### 2. **Repeated Reinitialization is a Common Failure Point**
+One of the most common causes of instability in IoT control systems is continuous system resets instead of maintaining session continuity.
+
+### 3. **Persistent Runtime Environments are Critical**
+Keeping browsers, applications, and device connections alive between automation cycles significantly improves reliability.
+
+### 4. **Automation Boundary Matters**
+- ❌ DOM resets break device connections
+- ✅ UI-layer automation preserves device state
+
+### 5. **Browser Automation has OS-Level Limitations**
+Standard Selenium automation crosses DOM boundaries repeatedly, forcing full browser restarts.
+
+---
+
+## 🛠️ Troubleshooting
 
 ### Serial Connection Issues
-- Ensure your Sphero is charged and powered on
-- Verify Bluetooth connectivity
+- Ensure your Sphero is **charged and powered on**
+- Verify **Bluetooth connectivity** in system settings
+- Try re-pairing the device
 
-### NPM Install Error
+### NPM Install Errors
 ```bash
 npm cache clean --force
 npm install
 ```
 
+### Python Dependencies Issues
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt --force-reinstall
+```
+
 ### Browser/Selenium Issues
-- Verify Microsoft Edge is installed and updated
-- Check that remote debugging port (9222) is available
-- Ensure Selenium WebDriver version is compatible with your Edge version
+- **Verify** Microsoft Edge is installed and updated (`edge --version`)
+- **Check** that remote debugging port (9222) is available
+  ```bash
+  netstat -ano | findstr :9222  # Windows
+  lsof -i :9222                  # macOS/Linux
+  ```
+- **Ensure** Selenium WebDriver version matches your Edge version
+- **Review** Edge DevTools Protocol documentation if connection fails
+
+### Persistent Session Not Working
+- Kill any existing Edge processes: `taskkill /F /IM msedge.exe` (Windows)
+- Check port 9222 is not in use by another process
+- Verify Edge was launched with correct debugging flag
+
+---
+
+## 📖 Educational Value
+
+This project is a practical demonstration of:
+- **Stateful vs Stateless Automation Systems**
+- **Browser Automation Limitations** (DOM vs OS boundaries)
+- **IoT Device Lifecycle Management**
+- **Web Bluetooth Behavior** in real environments
+- **Debugging Layered System Interactions**
+- **Practical Automation Architecture Design**
+
+---
+
+## 📝 License
+
+[Add your license here]
+
+## 🤝 Contributing
+
+Contributions welcome! Please feel free to submit a Pull Request.
+
+## 📧 Contact
+
+Questions? Open an issue or reach out to [@Willxxx7](https://github.com/Willxxx7)
