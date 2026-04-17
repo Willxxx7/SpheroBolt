@@ -1,9 +1,3 @@
-do this version:
-
-
-If you want, I can also turn this into a more polished version with badges, screenshots section, and a cleaner “How it works” diagram.
-
-```markdown
 [![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Selenium](https://img.shields.io/badge/Selenium-4.0%2B-43B02A?style=for-the-badge&logo=Selenium&logoColor=white)](https://selenium.dev)
 [![Edge](https://img.shields.io/badge/Edge-Chromium-0078D4?style=for-the-badge&logo=MicrosoftEdge&logoColor=white)](https://microsoft.com/edge)
@@ -14,35 +8,49 @@ If you want, I can also turn this into a more polished version with badges, scre
 
 **Production-grade Sphero BOLT control via Selenium + Edge debug sessions**
 
-## 🎯 **What It Does**
+---
+
+## 🎯 What It Does
 
 ```mermaid
 graph LR
     A[Edge Debug Port 9222] --> B[Sphero Edu Web App]
     B --> C[BOLT Pre-Paired]
     C --> D[Selenium Attaches]
-    D --> E[Roll/LED/Matrix Commands]
+    D --> E[Roll / LED / Matrix Commands]
     E --> F[Pi4B Leaderboard Update]
 ```
 
-**Key Innovation:** Pre-connect BOLT → Selenium controls live session → Zero pairing delays
+**Key Idea:**  
+Pre-connect Sphero BOLT → Selenium attaches to live browser session → No pairing delays
 
-## 🚀 **Quick Start**
+---
 
-### **Prerequisites**
+## 🚀 Quick Start
+
+### Prerequisites
 ```
-☐ Python 3.8+
-☐ Microsoft Edge (Chromium)
-☐ Sphero BOLT (charged, Bluetooth)
+Python 3.8+
+Microsoft Edge (Chromium)
+Sphero BOLT (charged, Bluetooth enabled)
 ```
 
-### **1. Launch Edge Debug Session**
+---
+
+### 1. Launch Edge Debug Session
+
 ```bash
 "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --remote-debugging-port=9222
 ```
-Navigate to `edu.sphero.com` → **Manually pair BOLT** (green LED)
 
-### **2. Install & Run**
+Then:
+- Go to `https://edu.sphero.com`
+- Manually pair Sphero BOLT (green LED confirms connection)
+
+---
+
+### 2. Install & Run
+
 ```bash
 git clone https://github.com/Willxxx7/SpheroBolt.git
 cd SpheroBolt
@@ -50,100 +58,135 @@ pip install -r requirements.txt
 python sphero_automation.py
 ```
 
-### **3. Watch BOLT Dance!**
-```
-✅ Sphero rolls forward (1m/s, 2s)
-✅ LED matrix smiley face  
-✅ Pi4B kiosk: "+100 points"
-✅ 16W total system verified
-```
+---
 
-## 🏗️ **Architecture**
+### 3. Expected Result
 
 ```
-Edge Debug (Persistent)
-    ↓ Web Bluetooth API (Pre-paired)
-Sphero Edu App (Live Session)
-    ↓ Selenium WebDriver
-Robot Commands (Roll/LED/Sensors)
-    ↓ Firebase/Render
-Pi4B Kiosk Leaderboard
+Sphero rolls forward
+LED matrix displays animation
+Pi4B leaderboard updates score
+Robot responds in real-time
 ```
 
-## 📊 **Stateless vs Stateful**
+---
 
-| **Approach** | **Stability** | **Setup Time** | **Use Case** |
-|--------------|---------------|----------------|--------------|
-| Normal Selenium | ❌ Unstable | 30s+ pairing | Dev testing |
-| **Edge Debug** | ✅ Production | **0s** (pre-paired) | **Live demos** |
+## 🏗️ Architecture
 
-## 🛠️ **Tech Stack**
+```text
+Edge Debug Session (Persistent)
+        ↓
+Sphero Edu Web App (Live Session)
+        ↓
+Web Bluetooth API (Pre-paired Device)
+        ↓
+Selenium Automation Layer
+        ↓
+Sphero BOLT Robot
+        ↓
+Pi4B Leaderboard System
+```
+
+---
+
+## 📊 Stateless vs Stateful Comparison
+
+| Approach              | Behaviour                                      | Result      |
+|----------------------|----------------------------------------------|------------|
+| Normal Selenium       | Browser restarts each run                    | Unstable   |
+| Edge Debug Session    | Persistent browser + reused connection       | Stable     |
+
+---
+
+## 🛠️ Tech Stack
 
 ```yaml
 Core:
-  - Python + Selenium WebDriver
-  - Microsoft Edge (Chromium debug)
-  - Sphero BOLT (Bluetooth 5.0, 1W)
+  - Python 3.8+
+  - Selenium WebDriver
+  - Microsoft Edge (Chromium)
+
+IoT:
+  - Sphero BOLT (Bluetooth)
+  - Web Bluetooth API
+  - Sphero Edu Platform
+
 Infrastructure:
-  - Pi4B kiosks (leaderboard)
-  - Firebase/Render (scores)
-  - GitHub Actions (CI/CD)
+  - Pi4B kiosk leaderboard
+  - Local automation scripts
 ```
 
-## 📸 **Screenshots**
+---
 
-**Live Demo**  
-![Sphero BOLT dancing via Selenium](screenshots/sphero_edge_control.png)
+## 📸 Screenshots (Add These Later)
 
-**Edge Debug Session**  
-![Pre-paired Edge browser](screenshots/edge_debug_9222.png)
+### Sphero Control Interface
+`screenshots/sphero_control.png`
 
-**Pi4B Leaderboard**  
-![Real-time scores](screenshots/pi4b_kiosk.png)
+### Edge Debug Session
+`screenshots/edge_debug.png`
 
-## 🔧 **Troubleshooting**
+### Pi4B Leaderboard
+`screenshots/pi4b_leaderboard.png`
 
-| **Issue** | **Fix** |
-|-----------|---------|
-| Port 9222 busy | `netstat -ano \| findstr :9222` → Kill process |
-| BOLT not found | Power cycle → Green→Blue→Rainbow |
-| Selenium timeout | Verify Edge debug flag `--remote-debugging-port=9222` |
+---
 
-## 🎓 **Key Engineering Insights**
+## 🔧 Troubleshooting
 
-1. **State persistence beats tool complexity** - Keep sessions alive
-2. **Pre-pairing eliminates race conditions** - Zero Bluetooth delays  
-3. **1W duty cycle** - Sphero optimized for continuous operation
-4. **OSI Layer 7 automation** - Web app → Robot execution
-5. **ISO 30141 compliant** - Production IoT architecture
-
-## 📈 **Production Results**
-
+### Port 9222 already in use
+```bash
+netstat -ano | findstr :9222
 ```
-✅ 100% reliable robot control
-✅ Zero manual intervention  
-✅ 16W total system power
-✅ Live Pi4B kiosk integration
-✅ BAe demo ready (Apr 2026)
-```
+Kill the process and restart Edge.
 
-## 📄 **License**
-[GPL-3.0](LICENSE)
+---
 
-## 🤝 **Contributing**
-Issues & PRs welcome! 🚀
+### Sphero not connecting
+- Turn robot off/on
+- Check Bluetooth pairing
+- Ensure Sphero Edu site is open
 
+---
 
-```
+### Selenium not attaching
+- Confirm Edge started with:
+  `--remote-debugging-port=9222`
+- Ensure session is already open before running script
 
-**This version includes:**
-- ✅ Professional badges (top row)
-- ✅ Clean Mermaid architecture diagram
-- ✅ Screenshot section placeholders
-- ✅ Compact tables for scannability
-- ✅ Production metrics (16W, ISO compliance)
-- ✅ BAe demo context
-- ✅ Educational insights preserved
+---
 
-**Copy → Paste → Commit → Professional README complete!** 🚀✨
+## 🎓 Key Engineering Insights
 
+- State persistence is more important than automation complexity  
+- Browser session continuity avoids Bluetooth reset cycles  
+- Pre-pairing eliminates unstable reconnection logic  
+- Real-world IoT systems depend on runtime stability  
+- Debug browser sessions expose powerful automation control  
+
+---
+
+## 📈 Outcomes
+
+- Stable robot control via browser automation  
+- Zero repeated pairing required  
+- Real-time IoT response system  
+- Educational IoT + automation demonstration  
+- Works as a live classroom engineering model  
+
+---
+
+## 📄 License
+
+GPL-3.0
+
+---
+
+## 🤝 Contributing
+
+Pull requests and improvements welcome.
+
+---
+
+## 📌 Summary
+
+This project demonstrates how **stateful browser automation + IoT devices** can be combined to create reliable real-world robotics control systems using Selenium and Edge debug sessions.
