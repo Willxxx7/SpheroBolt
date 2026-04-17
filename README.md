@@ -1,228 +1,287 @@
-# SpheroBolt - IoT Automation Project
+# SpheroBolt - Stateful IoT Automation with Selenium
 
-> Demonstrates a real-world IoT automation system combining Sphero BOLT robot control with stateful browser automation using Selenium and Microsoft Edge persistent debugging sessions.
+![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
+![Selenium](https://img.shields.io/badge/Selenium-Automation-green.svg)
+![Edge](https://img.shields.io/badge/Edge-Chromium-blue.svg)
+![IoT](https://img.shields.io/badge/IoT-Robotics-orange.svg)
+![Status](https://img.shields.io/badge/Status-Educational%20Project-lightgrey.svg)
 
-## 📋 Table of Contents
+---
+
+## Overview
+
+This project demonstrates a real-world IoT automation system combining:
+
+- Sphero BOLT robot  
+- Sphero Edu web application  
+- Selenium browser automation  
+- Microsoft Edge persistent debugging sessions  
+
+**Core Insight:**  
+Stateless automation fails in stateful IoT systems.  
+Reliable control is achieved by preserving system state, not repeatedly rebuilding it.
+
+---
+
+## Table of Contents
 
 - [Quick Start](#quick-start)
 - [Main Project](#main-project)
 - [Architecture](#architecture)
+- [Stateless vs Stateful Comparison](#stateless-vs-stateful-comparison)
 - [Key Learnings](#key-learnings)
 - [Troubleshooting](#troubleshooting)
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
+
 - Node.js (v14 or higher)
 - Python 3.8+
-- Microsoft Edge browser
+- Microsoft Edge (Chromium)
 - Sphero BOLT robot
+
+---
 
 ### Installation
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Willxxx7/SpheroBolt.git
-   cd SpheroBolt
-   ```
+#### Clone the repository
 
-2. **Install Node.js dependencies:**
-   ```bash
-   npm install
-   ```
+```bash
+git clone https://github.com/Willxxx7/SpheroBolt.git
+cd SpheroBolt
+```
 
-3. **Install Python dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+#### Install Node.js dependencies
 
-4. **Run the project:**
-   ```bash
-   node index.js
-   ```
+```bash
+npm install
+```
 
-### Basic Movement Example
+#### Install Python dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+#### Run the project
+
+```bash
+node index.js
+```
+
+---
+
+### Basic Movement Example (Node.js)
+
 ```javascript
 const Sphero = require('sphero');
+
 const sphero = Sphero('YOUR_SPHERO_SERIAL');
 
 sphero.color('red');
-sphero.roll(100, 90); // Roll forward at 100 speed for 90 degrees
-```
-
-### Project Structure
-```
-SpheroBolt/
-├── index.js                 # Main Node.js entry point
-├── python_automation/       # Python/Selenium automation scripts
-├── lib/                     # Library files
-├── package.json             # Node.js dependencies
-├── requirements.txt         # Python dependencies
-└── README.md               # This file
+sphero.roll(100, 90);
 ```
 
 ---
 
-## 🎯 Main Project: Python/Selenium IoT Automation
+## Main Project: Python/Selenium IoT Automation
 
 ### The Problem
 
-Initial automation attempts using standard Selenium suffered from **critical instability**:
-- ❌ Browser restarted on every run
-- ❌ Web application reinitialized each time
-- ❌ Bluetooth connection workflow repeatedly triggered
-- ❌ Device connection frequently dropped or failed
-- ❌ Inconsistent and unreliable automation
+Initial Selenium automation resulted in **critical instability**:
 
-### Root Cause Analysis
-
-**The Issue:** Stateless automation applied to a stateful IoT system
-
-Each run caused a cascade of resets:
-1. Full browser restart
-2. Web application reload
-3. JavaScript runtime reset
-4. Reinitialization of Bluetooth connection logic
-5. Re-triggering of pairing workflow
-
-This created a loop of repeated setup attempts instead of maintaining a stable control session.
-
-### The Solution: Persistent Browser Sessions
-
-Shifted the system from **stateless → stateful automation** by using Edge remote debugging mode.
-
-**Key Implementation:**
-- Launch Edge with remote debugging: `--remote-debugging-port=9222`
-- Attach Selenium to an existing browser session (not a new one)
-- Keep web application state active between runs
-- Reuse paired Sphero device
-- Automate only the control layer (UI interactions)
-
-**Result:** ✅ Stable, reliable IoT control
+- Browser restarted on every run  
+- Web application reloaded each time  
+- Bluetooth connection workflow repeatedly triggered  
+- Device connection dropped or failed  
+- Automation became unreliable  
 
 ---
 
-## 🏗️ Architecture
+### Root Cause
 
-```
-┌─────────────────────────────────────┐
-│   Selenium Automation Layer         │
-│   (Python Control Logic)            │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────▼──────────────────────┐
-│   Edge Browser                      │
-│   (Persistent Debug Session)        │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────▼──────────────────────┐
-│   Sphero Edu Web Application        │
-│   (Control Interface)               │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────▼──────────────────────┐
-│   Web Bluetooth API                 │
-│   (Device Connection Layer)         │
-└──────────────┬──────────────────────┘
-               │
-┌──────────────▼──────────────────────┐
-│   Sphero BOLT Robot                 │
-│   (Hardware)                        │
-└───────────────────────��─────────────┘
+**Stateless automation applied to a stateful IoT system**
+
+Each execution caused:
+
+1. Browser restart  
+2. Web app reload  
+3. JavaScript runtime reset  
+4. Bluetooth reconnection attempt  
+5. Pairing workflow restart  
+
+Result: continuous setup loop instead of stable control.
+
+---
+
+### The Solution
+
+Shift from **stateless → stateful automation**
+
+#### Key Implementation
+
+- Launch Edge with remote debugging:
+
+```bash
+msedge.exe --remote-debugging-port=9222
 ```
 
-### Technologies Used
+- Attach Selenium to existing browser session  
+- Keep Sphero Edu app running continuously  
+- Pair device once and reuse connection  
+- Automate only the control layer (UI)  
+
+#### Result
+
+✅ Stable, reliable IoT control  
+❌ No repeated pairing cycles  
+✅ Persistent device connection  
+
+---
+
+## Architecture
+
+```mermaid
+flowchart TD
+A[Selenium Automation Layer] --> B[Edge Browser (Persistent Session)]
+B --> C[Sphero Edu Web Application]
+C --> D[Web Bluetooth API]
+D --> E[Sphero BOLT Robot]
+```
+
+---
+
+## Stateless vs Stateful Comparison
+
+| Approach | Behaviour | Result |
+|----------|----------|--------|
+| Stateless (Normal Selenium) | Browser restarts, app reloads, Bluetooth reconnects | ❌ Unstable |
+| Stateful (Debug Session) | Persistent session, connection reused | ✅ Stable |
+
+---
+
+## Technologies Used
 
 | Component | Technology |
-|-----------|-----------|
-| **Scripting** | Python 3, Node.js |
-| **Browser Automation** | Selenium WebDriver |
-| **Browser** | Microsoft Edge (Chromium) |
-| **Debugging** | Edge DevTools Protocol (Remote Debugging) |
-| **Connectivity** | Web Bluetooth API |
-| **Hardware** | Sphero BOLT Robot |
-| **Control Interface** | Sphero Edu Web Application |
+|----------|-----------|
+| Scripting | Python, Node.js |
+| Automation | Selenium WebDriver |
+| Browser | Microsoft Edge (Chromium) |
+| Debugging | Edge DevTools Protocol |
+| Connectivity | Web Bluetooth API |
+| Hardware | Sphero BOLT |
+| Interface | Sphero Edu |
 
 ---
 
-## 📚 Key Learnings
+## Key Learnings
 
-### 1. **State Persistence > Tool Complexity**
-IoT automation reliability depends more on maintaining system state than on automation tool capabilities.
-
-### 2. **Repeated Reinitialization is a Common Failure Point**
-One of the most common causes of instability in IoT control systems is continuous system resets instead of maintaining session continuity.
-
-### 3. **Persistent Runtime Environments are Critical**
-Keeping browsers, applications, and device connections alive between automation cycles significantly improves reliability.
-
-### 4. **Automation Boundary Matters**
-- ❌ DOM resets break device connections
-- ✅ UI-layer automation preserves device state
-
-### 5. **Browser Automation has OS-Level Limitations**
-Standard Selenium automation crosses DOM boundaries repeatedly, forcing full browser restarts.
+### 1. State Persistence > Tool Complexity
+Reliable IoT automation depends on maintaining system state.
 
 ---
 
-## 🛠️ Troubleshooting
+### 2. Reinitialisation Causes Failure
+Repeated resets of browser/app/device state lead to instability.
 
-### Serial Connection Issues
-- Ensure your Sphero is **charged and powered on**
-- Verify **Bluetooth connectivity** in system settings
-- Try re-pairing the device
+---
 
-### NPM Install Errors
+### 3. Persistent Runtime is Critical
+Keeping sessions alive avoids reconnection issues.
+
+---
+
+### 4. Automation Boundaries Matter
+- ❌ Restarting browser resets device state  
+- ✅ Controlling UI within a live session preserves it  
+
+---
+
+### 5. Real Insight
+
+> Automation systems fail not because tools lack capability,  
+> but because system state is repeatedly destroyed and rebuilt.
+
+---
+
+## Troubleshooting
+
+### Device Issues
+
+- Ensure Sphero is charged and powered on  
+- Verify Bluetooth connection in system settings  
+- Re-pair device if necessary  
+
+---
+
+### Node.js Issues
+
 ```bash
 npm cache clean --force
 npm install
 ```
 
-### Python Dependencies Issues
+---
+
+### Python Issues
+
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt --force-reinstall
 ```
 
-### Browser/Selenium Issues
-- **Verify** Microsoft Edge is installed and updated (`edge --version`)
-- **Check** that remote debugging port (9222) is available
-  ```bash
-  netstat -ano | findstr :9222  # Windows
-  lsof -i :9222                  # macOS/Linux
-  ```
-- **Ensure** Selenium WebDriver version matches your Edge version
-- **Review** Edge DevTools Protocol documentation if connection fails
+---
 
-### Persistent Session Not Working
-- Kill any existing Edge processes: `taskkill /F /IM msedge.exe` (Windows)
-- Check port 9222 is not in use by another process
-- Verify Edge was launched with correct debugging flag
+### Browser Issues
+
+- Ensure Edge is installed and up to date  
+- Check debugging port is available  
+
+```bash
+netstat -ano | findstr :9222
+```
 
 ---
 
-## 📖 Educational Value
+### Persistent Session Issues
 
-This project is a practical demonstration of:
-- **Stateful vs Stateless Automation Systems**
-- **Browser Automation Limitations** (DOM vs OS boundaries)
-- **IoT Device Lifecycle Management**
-- **Web Bluetooth Behavior** in real environments
-- **Debugging Layered System Interactions**
-- **Practical Automation Architecture Design**
+```bash
+taskkill /F /IM msedge.exe
+```
+
+- Restart Edge with debugging enabled  
+- Ensure port 9222 is not already in use  
 
 ---
 
-## 📝 License
+## Educational Value
 
-[Add your license here]
+This project demonstrates:
 
-## 🤝 Contributing
+- Stateful vs stateless systems  
+- IoT automation challenges  
+- Browser vs OS boundaries  
+- Web Bluetooth behaviour  
+- Real-world debugging strategies  
+- Automation architecture design  
 
-Contributions welcome! Please feel free to submit a Pull Request.
+---
 
-## 📧 Contact
+## License
 
-Questions? Open an issue or reach out to [@Willxxx7](https://github.com/Willxxx7)
+GPL-3.0
+
+---
+
+## Contributing
+
+Contributions are welcome. Feel free to open issues or submit pull requests.
+
+---
+
+## Contact
+
+GitHub: https://github.com/Willxxx7
